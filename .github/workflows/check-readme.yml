@@ -9,6 +9,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-go
+        with:
+          go-version: "1.18"
+
       - run: ./scripts/update-readme.sh
       - uses: tj-actions/verify-changed-files@v10.1
         id: verify-changed-files
