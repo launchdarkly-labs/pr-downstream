@@ -23,5 +23,5 @@ jobs:
       - name: Fail if README.md changed
         if: steps.verify-changed-files.outputs.files_changed == 'true'
         run: |
-          echo README.md changed as a result of running `./scripts/update-readme.sh`
+          echo "README.md changed as a result of running `./scripts/update-readme.sh`"
           exit 1
