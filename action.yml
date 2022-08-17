@@ -1,0 +1,95 @@
+name: Open downstream PR if necessary
+description: This action opens a PR against downstream repositories to update a library dependency.
+inputs:
+  repository:
+    required: true
+    description: The downstream repository that consumes the library dependency.
+  token:
+    required: true
+    description: Github PAT used to open PRs. This token must have write access against the repository.
+  update-command:
+    required: true
+    description: The command run from the downstream repo that is used to update the library dependency.
+  relevance-filter:
+    required: false
+    default: "- '**'"
+    description: A path filter used to determine if any relevant files where changed as a result of the `update-command`. By default, all changes are considered relevant.
+  reviewers:
+    required: false
+    description: A comma or newline-separated list of reviewers (GitHub usernames) to request a review from.
+  team-reviewers:
+    required: false
+    description: A comma or newline-separated list of GitHub teams to request a review from.
+  title:
+    required: false
+    description: The title of the pull request.
+    default: "[bot] Bump ${{github.event.repository.name}}"
+  commit-message:
+    required: false
+    description: The message to use when committing changes.
+    default: "[bot] Bump ${{github.event.repository.name}}"
+  labels:
+    required: false
+    description: A comma or newline-separated list of labels.
+    default: bot
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout ${{inputs.repository}}
+      uses: actions/checkout@v3
+      with:
+        repository: ${{inputs.repository}}
+        token: ${{inputs.token}}
+        path: ${{inputs.repository}}
+
+    - uses: actions/setup-go@v3
+      with:
+        go-version-file: ${{inputs.repository}}/go.mod
+        cache: true
+        cache-dependency-path: ${{inputs.repository}}/go.sum
+
+    - name: Setup git
+      shell: bash
+      run: |
+        git config --global url."https://${{inputs.token}}@github.com/".insteadOf https://github.com/
+
+    - name: Run update command
+      shell: bash
+      working-directory: ${{inputs.repository}}
+      run: ${{inputs.update-command}}
+
+    # If the only files that changed are go.mod, go.sum, and vendor/modules.txt, then it's not worth a PR.
+    - name: Check if relevant files were changed
+      uses: dorny/paths-filter@v2.10.2
+      id: changes
+      with:
+        working-directory: ${{inputs.repository}}
+        base: HEAD
+        filters: |
+          relevant:
+            ${{inputs.relevance-filter}}
+
+    - name: Create pull request
+      if: steps.changes.outputs.relevant == 'true'
+      uses: peter-evans/create-pull-request@v4.0.4
+      with:
+        branch: bump-${{github.repository}}/patch
+        path: ${{inputs.repository}}
+        reviewers: ${{inputs.reviewers}}
+        team-reviewers: ${{inputs.team-reviewers}}
+        delete-branch: true
+        commit-message: ${{inputs.commit-message}}
+        title: ${{inputs.title}}
+        body: |
+          ### Summary
+          This PR bumps [${{github.event.repository.name}}](https://github.com/${{github.repository}}) to pick up the most recent changes.
+
+          The following commands were run to generate this PR:
+          ```sh
+          ${{inputs.update-command}}
+          ```
+          ---
+          This PR was created using [launchdarkly-labs/pr-downstream](https://github.com/launchdarkly-labs/pr-downstream).
+        labels: ${{inputs.labels}}
+        token: ${{inputs.token}}
