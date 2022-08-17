@@ -1,5 +1,5 @@
 name: Open downstream PR if necessary
-description: This action opens a PR against downstream repositories to bump and vendor foundation.
+description: This action opens a PR against downstream repositories to update a library dependency.
 inputs:
   repository:
     required: true
