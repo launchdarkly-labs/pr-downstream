@@ -35,6 +35,19 @@ jobs:
           GOPRIVATE: github.com/launchdarkly-labs/*
 ```
 
+### Action inputs
+|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|----------|------------------------------------------------|
+| `commit-message`   | The message to use when committing changes.                                                                                                               | `false`  | `[bot] Bump ${{github.event.repository.name}}` |
+| `labels`           | A comma or newline-separated list of labels.                                                                                                              | `false`  | `bot`                                          |
+| `relevance-filter` | A path filter used to determine if any relevant files where changed as a result of the `update-command`. By default, all changes are considered relevant. | `false`  | `- '**'                                        |
+|                    |                                                                                                                                                           |          | `                                              |
+| `repository`       | The downstream repository that consumes the library dependency.                                                                                           | `true`   | `N/A`                                          |
+| `reviewers`        | A comma or newline-separated list of reviewers (GitHub usernames) to request a review from.                                                               | `false`  | `N/A`                                          |
+| `team-reviewers`   | A comma or newline-separated list of GitHub teams to request a review from.                                                                               | `false`  | `N/A`                                          |
+| `title`            | The title of the pull request.                                                                                                                            | `false`  | `[bot] Bump ${{github.event.repository.name}}` |
+| `token`            | Github PAT used to open PRs. This token must have write access against the repository.                                                                    | `true`   | `N/A`                                          |
+| `update-command`   | The command run from the downstream repo that is used to update the library dependency.                                                                   | `true`   | `N/A`                                          |
+
 ## Development
 
 ### Publishing a new release
