@@ -47,6 +47,7 @@ jobs:
 | `title`            | The title of the pull request.                                                                                                                            | `false`  | `[bot] Bump ${{github.event.repository.name}}` |
 | `token`            | Github PAT used to open PRs. This token must have write access against the repository.                                                                    | `true`   | `N/A`                                          |
 | `update-command`   | The command run from the downstream repo that is used to update the library dependency.                                                                   | `true`   | `N/A`                                          |
+|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|----------|------------------------------------------------|
 
 ## Development
 
