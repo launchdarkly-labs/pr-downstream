@@ -34,9 +34,9 @@ jobs:
         env:
           GOPRIVATE: github.com/launchdarkly-labs/*
 ```
-
 ### Action inputs
 
+<!-- BEGIN_ACTION_INPUT_TABLE -->
 |        NAME        |                                                                        DESCRIPTION                                                                        | REQUIRED |                    DEFAULT                     |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|----------|------------------------------------------------|
 | `commit-message`   | The message to use when committing changes.                                                                                                               | `false`  | `[bot] Bump ${{github.event.repository.name}}` |
@@ -48,8 +48,11 @@ jobs:
 | `title`            | The title of the pull request.                                                                                                                            | `false`  | `[bot] Bump ${{github.event.repository.name}}` |
 | `token`            | Github PAT used to open PRs. This token must have write access against the repository.                                                                    | `true`   | `N/A`                                          |
 | `update-command`   | The command run from the downstream repo that is used to update the library dependency.                                                                   | `true`   | `N/A`                                          |
+<!-- END_ACTION_INPUT_TABLE -->
 
 ## Development
+
+If you change or add an input, use `./scripts/update-readme.sh` to keep the above **Action inputs** table up to date.
 
 ### Publishing a new release
 
