@@ -12,8 +12,7 @@ inputs:
     description: The command run from the downstream repo that is used to update the library dependency.
   relevance-filter:
     required: false
-    default: |
-      - '**'
+    default: "- '**'"
     description: A path filter used to determine if any relevant files where changed as a result of the `update-command`. By default, all changes are considered relevant.
   reviewers:
     required: false
