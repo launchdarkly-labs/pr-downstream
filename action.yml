@@ -58,8 +58,6 @@ runs:
     - name: Run update command
       shell: bash
       working-directory: ${{inputs.repository}}
-      env:
-        GOPRIVATE: github.com/launchdarkly/*
       run: ${{inputs.update-command}}
 
     # If the only files that changed are go.mod, go.sum, and vendor/modules.txt, then it's not worth a PR.
