@@ -4,8 +4,7 @@ set -o errexit
 set -o pipefail
 set -o errtrace
 
-if command -v describe-action >/dev/null 2>&1 ; then
-else
+if ! (command -v describe-action >/dev/null 2>&1) ; then
     go install github.com/actions-ecosystem/describe-action/cmd/describe-action@v0.2.0
 fi
 
