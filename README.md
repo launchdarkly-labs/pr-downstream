@@ -37,7 +37,7 @@ jobs:
 ### Action inputs
 
 <!-- BEGIN_ACTION_INPUT_TABLE -->
-|        NAME        |                                                                        DESCRIPTION                                                                        | REQUIRED |                    DEFAULT                     |
+|        NAME        |                                                                        DESCRIPTION                                                                        | REQUIRED |                    LT                     |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|----------|------------------------------------------------|
 | `commit-message`   | The message to use when committing changes.                                                                                                               | `false`  | `[bot] Bump ${{github.event.repository.name}}` |
 | `labels`           | A comma or newline-separated list of labels.                                                                                                              | `false`  | `bot`                                          |
