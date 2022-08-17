@@ -40,7 +40,7 @@ runs:
     - name: Checkout ${{inputs.repository}}
       uses: actions/checkout@v3
       with:
-        repository: launchdarkly/${{inputs.repository}}
+        repository: ${{inputs.repository}}
         token: ${{inputs.token}}
         path: ${{inputs.repository}}
 
