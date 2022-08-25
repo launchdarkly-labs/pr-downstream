@@ -24,6 +24,14 @@ inputs:
     required: false
     description: The title of the pull request.
     default: "[bot] Bump ${{github.event.repository.name}}"
+  committer:
+    required: false
+    description: The committer name and email address in the format Display Name <email@address.com>. Defaults to the GitHub Actions bot user.
+    default: "GitHub <noreply@github.com>"
+  author:
+    required: false
+    description: The author name and email address in the format Display Name <email@address.com>. Defaults to the user who triggered the workflow run.
+    default: "${{github.actor}} <${{github.actor}}@users.noreply.github.com>"
   commit-message:
     required: false
     description: The message to use when committing changes.
@@ -80,6 +88,8 @@ runs:
         team-reviewers: ${{inputs.team-reviewers}}
         delete-branch: true
         commit-message: ${{inputs.commit-message}}
+        committer: ${{inputs.committer}}
+        author: ${{inputs.author}}
         title: ${{inputs.title}}
         body: |
           ### Summary
