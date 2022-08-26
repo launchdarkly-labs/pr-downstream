@@ -10,6 +10,10 @@ inputs:
   update-command:
     required: true
     description: The command run from the downstream repo that is used to update the library dependency.
+  working-directory:
+    required: false
+    default: ""
+    description: The relative directory in the downstream repo where all commands will run.
   relevance-filter:
     required: false
     default: "- '**'"
@@ -41,6 +45,20 @@ inputs:
     description: A comma or newline-separated list of labels.
     default: bot
 
+outputs:
+  pull-request-number:
+    description: "The pull request number"
+    value: ${{steps.create-pr.outputs.pull-request-number}}
+  pull-request-url:
+    description: "The URL of the pull request."
+    value: ${{steps.create-pr.outputs.pull-request-url}}
+  pull-request-operation:
+    description: "The pull request operation performed by the action, `created`, `updated` or `closed`."
+    value: ${{steps.create-pr.outputs.pull-request-description}}
+  pull-request-head-sha:
+    description: "The commit SHA of the pull request branch."
+    value: ${{steps.create-pr.outputs.pull-request-head-sha}}
+
 runs:
   using: composite
   steps:
@@ -51,11 +69,22 @@ runs:
         token: ${{inputs.token}}
         path: ${{inputs.repository}}
 
+    - name: Set working directory
+      shell: bash
+      id: working-dir
+      run: |
+        if [ -z "${{inputs.working-directory}}" ]
+        then
+          echo "::set-output name=dir::${{inputs.repository}}"
+        else
+          echo "::set-output name=dir::${{inputs.repository}}/${{inputs.working-directory}}"
+        fi
+
     - uses: actions/setup-go@v3
       with:
-        go-version-file: ${{inputs.repository}}/go.mod
+        go-version-file: ${{steps.working-dir.outputs.dir}}/go.mod
         cache: true
-        cache-dependency-path: ${{inputs.repository}}/go.sum
+        cache-dependency-path: ${{steps.working-dir.outputs.dir}}/go.sum
 
     - name: Setup git
       shell: bash
@@ -64,7 +93,7 @@ runs:
 
     - name: Run update command
       shell: bash
-      working-directory: ${{inputs.repository}}
+      working-directory: ${{steps.working-dir.outputs.dir}}
       run: ${{inputs.update-command}}
 
     # If the only files that changed are go.mod, go.sum, and vendor/modules.txt, then it's not worth a PR.
@@ -72,7 +101,7 @@ runs:
       uses: dorny/paths-filter@v2.10.2
       id: changes
       with:
-        working-directory: ${{inputs.repository}}
+        working-directory: ${{steps.working-dir.outputs.dir}}
         base: HEAD
         filters: |
           relevant:
@@ -81,6 +110,7 @@ runs:
     - name: Create pull request
       if: steps.changes.outputs.relevant == 'true'
       uses: peter-evans/create-pull-request@v4.0.4
+      id: create-pr
       with:
         branch: bump-${{github.repository}}/patch
         path: ${{inputs.repository}}
