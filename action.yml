@@ -45,6 +45,20 @@ inputs:
     description: A comma or newline-separated list of labels.
     default: bot
 
+outputs:
+  pull-request-number:
+    description: "The pull request number"
+    value: ${{steps.create-pr.outputs.pull-request-number}}
+  pull-request-url:
+    description: "The URL of the pull request."
+    value: ${{steps.create-pr.outputs.pull-request-url}}
+  pull-request-operation:
+    description: "The pull request operation performed by the action, `created`, `updated` or `closed`."
+    value: ${{steps.create-pr.outputs.pull-request-description}}
+  pull-request-head-sha:
+    description: "The commit SHA of the pull request branch."
+    value: ${{steps.create-pr.outputs.pull-request-head-sha}}
+
 runs:
   using: composite
   steps:
@@ -96,6 +110,7 @@ runs:
     - name: Create pull request
       if: steps.changes.outputs.relevant == 'true'
       uses: peter-evans/create-pull-request@v4.0.4
+      id: create-pr
       with:
         branch: bump-${{github.repository}}/patch
         path: ${{inputs.repository}}

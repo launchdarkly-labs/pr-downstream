@@ -53,6 +53,17 @@ jobs:
 | `working-directory` | The relative directory in the downstream repo where all commands will run.                                                                                | `false`  | `N/A`                                                            |
 <!-- END_ACTION_INPUT_TABLE -->
 
+### Action outputs
+
+<!-- BEGIN_ACTION_OUTPUT_TABLE -->
+|           NAME           |                                      DESCRIPTION                                      |
+|--------------------------|---------------------------------------------------------------------------------------|
+| `pull-request-head-sha`  | The commit SHA of the pull request branch.                                            |
+| `pull-request-number`    | The pull request number                                                               |
+| `pull-request-operation` | The pull request operation performed by the action, `created`, `updated` or `closed`. |
+| `pull-request-url`       | The URL of the pull request.                                                          |
+<!-- END_ACTION_OUTPUT_TABLE -->
+
 ## Development
 
 If you change or add an input, use `./scripts/update-readme.sh` to keep the above **Action inputs** table up to date.
