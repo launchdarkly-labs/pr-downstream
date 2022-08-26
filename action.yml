@@ -61,14 +61,10 @@ runs:
       run: |
         if [ -z "${{inputs.working-directory}}" ]
         then
-          echo "::set-output name=dir=${{inputs.repository}}"
+          echo "::set-output name=dir::${{inputs.repository}}"
         else
-          echo "::set-output name=dir=${{inputs.repository}}/${{inputs.working-directory}}"
+          echo "::set-output name=dir::${{inputs.repository}}/${{inputs.working-directory}}"
         fi
-
-    - shell: bash
-      if: steps.working-dir.outputs.dir != 'true'
-      run: echo ${{ steps.working-dir.outputs.dir }}
 
     - uses: actions/setup-go@v3
       with:
