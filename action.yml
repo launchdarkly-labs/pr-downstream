@@ -59,7 +59,7 @@ runs:
       shell: bash
       id: working-dir
       run: |
-        if [ ${{inputs.working-directory}} = "" ]
+        if [ -z "${{inputs.working-directory}}" ]
         then
           echo "::set-output name=dir=${{inputs.repository}}"
         else
