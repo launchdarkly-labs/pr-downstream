@@ -66,6 +66,9 @@ runs:
           echo "::set-output name=dir=${{inputs.repository}}/${{inputs.working-directory}}"
         fi
 
+    - shell: bash
+      run: echo ${{steps.working-dir.outputs}}
+
     - uses: actions/setup-go@v3
       with:
         go-version-file: ${{steps.working-dir.outputs.dir}}/go.mod
