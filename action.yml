@@ -67,7 +67,7 @@ runs:
         fi
 
     - shell: bash
-      run: echo ${{steps.working-dir.outputs}}
+      run: echo ${{join(steps.working-dir.outputs.*, '\n')}}
 
     - uses: actions/setup-go@v3
       with:
