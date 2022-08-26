@@ -16,7 +16,7 @@ jobs:
     name: Goaltender
     runs-on: ubuntu-latest
     steps:
-      - uses: launchdarkly-labs/pr-downstream@v1.0.0
+      - uses: launchdarkly-labs/pr-downstream@v1.2.0
         with:
           repository: launchdarkly-labs/some-repo
           reviewer: ${{ github.actor }}
