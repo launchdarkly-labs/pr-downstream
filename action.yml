@@ -98,7 +98,7 @@ runs:
 
     # If the only files that changed are go.mod, go.sum, and vendor/modules.txt, then it's not worth a PR.
     - name: Check if relevant files were changed
-      uses: dorny/paths-filter@v2.10.2
+      uses: dorny/paths-filter@v2.11.1
       id: changes
       with:
         working-directory: ${{steps.working-dir.outputs.dir}}
