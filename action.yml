@@ -129,7 +129,7 @@ runs:
         This PR was created using [launchdarkly-labs/pr-downstream](https://github.com/launchdarkly-labs/pr-downstream).
         "
 
-        if [ "${{inputs.auto-merge}}" -eq "true" ]
+        if [ "${{inputs.auto-merge}}" == "true" ]
         then
           body="$body\nThis PR will automatically merge once approved."
         fi
