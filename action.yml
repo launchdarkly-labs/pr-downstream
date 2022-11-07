@@ -75,16 +75,16 @@ runs:
       run: |
         if [ -z "${{inputs.working-directory}}" ]
         then
-          echo "::set-output name=dir::${{inputs.repository}}"
+          echo "working_dir=${{inputs.repository}}" >> $GITHUB_ENV
         else
-          echo "::set-output name=dir::${{inputs.repository}}/${{inputs.working-directory}}"
+          echo "working_dir=${{inputs.repository}}/${{inputs.working-directory}}}" >> $GITHUB_ENV
         fi
 
     - uses: actions/setup-go@v3
       with:
-        go-version-file: ${{steps.working-dir.outputs.dir}}/go.mod
+        go-version-file: ${{ env.working_dir }}/go.mod
         cache: true
-        cache-dependency-path: ${{steps.working-dir.outputs.dir}}/go.sum
+        cache-dependency-path: ${{ env.working_dir }}/go.sum
 
     - name: Setup git
       shell: bash
@@ -93,15 +93,15 @@ runs:
 
     - name: Run update command
       shell: bash
-      working-directory: ${{steps.working-dir.outputs.dir}}
+      working-directory: ${{ env.working_dir }}
       run: ${{inputs.update-command}}
 
     # If the only files that changed are go.mod, go.sum, and vendor/modules.txt, then it's not worth a PR.
     - name: Check if relevant files were changed
-      uses: dorny/paths-filter@v2.10.2
+      uses: dorny/paths-filter@v2.11.1
       id: changes
       with:
-        working-directory: ${{steps.working-dir.outputs.dir}}
+        working-directory: ${{ env.working_dir }}
         base: HEAD
         filters: |
           relevant:
