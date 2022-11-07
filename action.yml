@@ -145,7 +145,7 @@ runs:
     - name: Update step summary with PR information
       shell: bash
       run: |
-        echo: "PR Number: **${{ steps.create-pr.outputs.pull-request-number }}**" >> $GITHUB_STEP_SUMMARY
+        echo "PR Number: **${{ steps.create-pr.outputs.pull-request-number }}**" >> $GITHUB_STEP_SUMMARY
 
     - name: Enable auto-merge
       if: inputs.auto-merge == 'true'
