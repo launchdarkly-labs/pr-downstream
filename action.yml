@@ -128,7 +128,6 @@ runs:
         ```
         ---
         This PR was created using [launchdarkly-labs/pr-downstream](https://github.com/launchdarkly-labs/pr-downstream).
-        "
         EOT
 
         if [ "${{inputs.auto-merge}}" == "true" ]
