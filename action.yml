@@ -135,7 +135,10 @@ runs:
         then
           body="$body\nThis PR will automatically merge once approved."
         fi
-        echo "pr_body=$body" >> $GITHUB_ENV
+
+        echo "pr_body<<EOF" >> $GITHUB_ENV
+        echo $body >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
 
     - name: Create pull request
       if: steps.changes.outputs.relevant == 'true'
