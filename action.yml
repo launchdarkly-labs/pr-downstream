@@ -118,7 +118,7 @@ runs:
     - name: Construct PR body
       shell: bash
       run: |
-        cat <<EOF
+        cat <<EOT >> /tmp/pr_body.txt
         ### Summary
         This PR bumps [${{github.event.repository.name}}](https://github.com/${{github.repository}}) to pick up the most recent changes.
 
@@ -129,7 +129,7 @@ runs:
         ---
         This PR was created using [launchdarkly-labs/pr-downstream](https://github.com/launchdarkly-labs/pr-downstream).
         "
-        EOF >> /tmp/pr_body.txt
+        EOT
 
         if [ "${{inputs.auto-merge}}" == "true" ]
         then
