@@ -44,6 +44,10 @@ inputs:
     required: false
     description: A comma or newline-separated list of labels.
     default: bot
+  branch:
+    required: false
+    description: The pull request branch name.
+    default: bump-${{github.repository}}/patch
   auto-merge:
     required: false
     description: Whether or not to enable "Auto-merge" on the pull request.
@@ -116,7 +120,7 @@ runs:
       uses: peter-evans/create-pull-request@v4.2.0
       id: create-pr
       with:
-        branch: bump-${{github.repository}}/patch
+        branch: ${{inputs.branch}}
         path: ${{inputs.repository}}
         reviewers: ${{inputs.reviewers}}
         team-reviewers: ${{inputs.team-reviewers}}
@@ -137,6 +141,11 @@ runs:
           This PR was created using [launchdarkly-labs/pr-downstream](https://github.com/launchdarkly-labs/pr-downstream).
         labels: ${{inputs.labels}}
         token: ${{inputs.token}}
+
+    - name: Update step summary with PR information
+      shell: bash
+      run: |
+        echo: "PR Number: **${{ steps.create-pr.outputs.pull-request-number }}**" >> $GITHUB_STEP_SUMMARY
 
     - name: Enable auto-merge
       if: inputs.auto-merge == 'true'
