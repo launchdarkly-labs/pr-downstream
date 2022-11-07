@@ -115,6 +115,25 @@ runs:
           relevant:
             ${{inputs.relevance-filter}}
 
+    - name: Construct PR body
+      shell: bash
+      run: |
+        body="### Summary
+        This PR bumps [${{github.event.repository.name}}](https://github.com/${{github.repository}}) to pick up the most recent changes.
+
+        The following commands were run to generate this PR:
+        ```sh
+        ${{inputs.update-command}}
+        ```
+        ---
+        This PR was created using [launchdarkly-labs/pr-downstream](https://github.com/launchdarkly-labs/pr-downstream).
+        "
+        if [ "${{inputs.auto-merge}}" -eq "true" ]
+        then
+          body="$body\nThis PR will automatically merge once approved."
+        fi
+        echo "pr_body=$body" >> $GITHUB_ENV
+
     - name: Create pull request
       if: steps.changes.outputs.relevant == 'true'
       uses: peter-evans/create-pull-request@v4.2.0
@@ -129,26 +148,9 @@ runs:
         committer: ${{inputs.committer}}
         author: ${{inputs.author}}
         title: ${{inputs.title}}
-        body: |
-          ### Summary
-          This PR bumps [${{github.event.repository.name}}](https://github.com/${{github.repository}}) to pick up the most recent changes.
-
-          The following commands were run to generate this PR:
-          ```sh
-          ${{inputs.update-command}}
-          ```
-          ---
-          This PR was created using [launchdarkly-labs/pr-downstream](https://github.com/launchdarkly-labs/pr-downstream).
+        body: ${{env.pr_body}}
         labels: ${{inputs.labels}}
         token: ${{inputs.token}}
-
-    - name: Update step summary with PR information
-      shell: bash
-      run: |
-        mrkdwn="PR Number: **${{ steps.create-pr.outputs.pull-request-number }}**
-        PR Link: {{ steps.create-pr.outputs.pull-request-url }}
-        "
-        echo "$mrkdwn" >> $GITHUB_STEP_SUMMARY
 
     - name: Enable auto-merge
       if: inputs.auto-merge == 'true'
