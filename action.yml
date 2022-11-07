@@ -144,5 +144,5 @@ runs:
       with:
         repository: ${{inputs.repository}}
         token: ${{inputs.token}}
-        pull-request-number: steps.create-pr.outputs.pull-request-number
+        pull-request-number: ${{ steps.create-pr.outputs.pull-request-number }}
         merge-method: squash
