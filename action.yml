@@ -118,7 +118,8 @@ runs:
     - name: Construct PR body
       shell: bash
       run: |
-        body="### Summary
+        body=cat <<EOF
+        ### Summary
         This PR bumps [${{github.event.repository.name}}](https://github.com/${{github.repository}}) to pick up the most recent changes.
 
         The following commands were run to generate this PR:
@@ -128,14 +129,15 @@ runs:
         ---
         This PR was created using [launchdarkly-labs/pr-downstream](https://github.com/launchdarkly-labs/pr-downstream).
         "
+        EOF >> /tmp/pr_body.txt
 
         if [ "${{inputs.auto-merge}}" == "true" ]
         then
-          body="$body\nThis PR will automatically merge once approved."
+          echo "This PR will automatically merge once approved." >> /tmp/pr_body.txt
         fi
 
         echo "pr_body<<EOF" >> $GITHUB_ENV
-        echo $body >> $GITHUB_ENV
+        cat /tmp/pr_body.txt >> $GITHUB_ENV
         echo "EOF" >> $GITHUB_ENV
 
     - name: Create pull request
