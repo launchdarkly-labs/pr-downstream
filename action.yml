@@ -85,7 +85,7 @@ runs:
         then
           echo "working_dir=${{inputs.repository}}" >> $GITHUB_ENV
         else
-          echo "working_dir=${{inputs.repository}}/${{inputs.working-directory}}}" >> $GITHUB_ENV
+          echo "working_dir=${{inputs.repository}}/${{inputs.working-directory}}" >> $GITHUB_ENV
         fi
 
     - uses: actions/setup-go@v3
