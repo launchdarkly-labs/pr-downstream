@@ -133,6 +133,7 @@ runs:
           echo "---" >> /tmp/pr_body.txt
           echo "### Auto-merge enabled" >> /tmp/pr_body.txt
           echo "This pull request will squash and merge automatically when all requirements are met." >> /tmp/pr_body.txt
+          echo "" >> /tmp/pr_body.txt
         fi
 
         echo "---" >> /tmp/pr_body.txt
