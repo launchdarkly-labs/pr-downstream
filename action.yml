@@ -132,7 +132,8 @@ runs:
 
         if [ "${{inputs.auto-merge}}" == "true" ]
         then
-          echo "This PR will automatically merge once approved." >> /tmp/pr_body.txt
+          echo "### Auto-merge enabled" >> /tmp/pr_body.txt
+          echo "This pull request will squash and merge automatically when all requirements are met." >> /tmp/pr_body.txt
         fi
 
         echo "pr_body<<EOF" >> $GITHUB_ENV
