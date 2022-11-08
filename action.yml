@@ -162,7 +162,7 @@ runs:
         token: ${{inputs.token}}
 
     - name: Enable auto-merge
-      if: inputs.auto-merge == 'true'
+      if: steps.changes.outputs.relevant == 'true' && inputs.auto-merge == 'true'
       uses: peter-evans/enable-pull-request-automerge@v2.2.1
       with:
         repository: ${{inputs.repository}}
