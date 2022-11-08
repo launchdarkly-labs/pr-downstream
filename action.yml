@@ -118,7 +118,7 @@ runs:
     - name: Construct PR body
       shell: bash
       run: |
-        cat <<EOT >> /tmp/pr_body.txt
+        cat << "EOT" >> /tmp/pr_body.txt
         ### Summary
         This PR bumps [${{github.event.repository.name}}](https://github.com/${{github.repository}}) to pick up the most recent changes.
 
