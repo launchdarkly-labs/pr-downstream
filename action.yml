@@ -137,7 +137,7 @@ runs:
         fi
 
         echo "---" >> /tmp/pr_body.txt
-        echo "This PR was created using [launchdarkly-labs/pr-downstream](https://github.com/launchdarkly-labs/pr-downstream)." >> /tmp/pr_body.txt
+        echo "This PR was created by [${{github.workflow}}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) using [launchdarkly-labs/pr-downstream](https://github.com/launchdarkly-labs/pr-downstream)." >> /tmp/pr_body.txt
 
         echo "pr_body<<EOF" >> $GITHUB_ENV
         cat /tmp/pr_body.txt >> $GITHUB_ENV
