@@ -161,6 +161,10 @@ runs:
         labels: ${{inputs.labels}}
         token: ${{inputs.token}}
 
+    - name: Check outputs
+      if: ${{ steps.cpr.outputs.pull-request-number }}
+      run: echo "Successfully opened a PR: ${{ steps.cpr.outputs.pull-request-url }}"
+
     - name: Enable auto-merge
       if: steps.changes.outputs.relevant == 'true' && inputs.auto-merge == 'true'
       uses: peter-evans/enable-pull-request-automerge@v3.0.0
