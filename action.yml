@@ -162,7 +162,7 @@ runs:
         token: ${{inputs.token}}
 
     - name: Check outputs
-      if: ${{ steps.cpr.outputs.pull-request-number }}
+      if: ${{ steps.create-pr.outputs.pull-request-url }}
       run: |
         echo "Successfully opened a PR: ${{ steps.create-pr.outputs.pull-request-url }}"
 
