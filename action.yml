@@ -162,6 +162,7 @@ runs:
         token: ${{inputs.token}}
 
     - name: Check outputs
+      shell: bash
       if: ${{ steps.create-pr.outputs.pull-request-url }}
       run: |
         echo "Successfully opened a PR: ${{ steps.create-pr.outputs.pull-request-url }}"
