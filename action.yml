@@ -216,6 +216,7 @@ runs:
           valid=false
         fi
         if [[ $value == false ]] then
+          echo "Looks like repository might not be configured correctly. Check the github warnings for more info."
           exit 1
         fi
 
