@@ -205,8 +205,6 @@ runs:
             jq 'if has("allow_auto_merge") then .allow_auto_merge else false end' -r || true
         )"
 
-        set -x
-
         echo "Dry run mode is enabled, validating permissions"
         valid=true
         if [[ $permission == "none" || $permission == "read" ]]; then
