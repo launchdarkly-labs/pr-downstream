@@ -191,6 +191,7 @@ runs:
 
     - name: validate raise pr dryrun
       if: inputs.dryrun == 'true'
+      shell: bash
       env:
         GITHUB_TOKEN: ${{inputs.token}}
       run: |
