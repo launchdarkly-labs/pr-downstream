@@ -4,6 +4,10 @@ inputs:
   repository:
     required: true
     description: The downstream repository that consumes the library dependency.
+  ref:
+    required: false
+    description: The branch, tag, or commit SHA to checkout from the downstream repository.
+    default: "main"
   token:
     required: true
     description: Github PAT used to open PRs. This token must have write access against the repository.
@@ -78,6 +82,7 @@ runs:
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
         repository: ${{inputs.repository}}
+        ref: ${{inputs.ref}}
         token: ${{inputs.token}}
         path: ${{inputs.repository}}
 
@@ -222,8 +227,8 @@ runs:
 
         echo "Looks like permissions are in order"
         echo "Relevant files found: ${{ steps.changes.outputs.relevant }}"
-        echo "On main, I'd generate the following PR:"
-      
+        echo "On ${{inputs.ref}}, I'd generate the following PR:"
+
         cat <<'EOF'
         branch: ${{inputs.branch}}
         path: ${{inputs.repository}}
@@ -234,7 +239,7 @@ runs:
         author: ${{inputs.author}}
         title: ${{inputs.title}}
         labels: ${{inputs.labels}}
-        
+
         body:
         ${{env.pr_body}}
         EOF
