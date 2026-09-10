@@ -34,6 +34,16 @@ jobs:
         env:
           GOPRIVATE: github.com/launchdarkly-labs/*
 ```
+### Pull request body
+
+The pull request describes the bump and lists the commands that produced it. If the `update-command` changed the version of a GitHub-hosted module in a `go.mod`, the body also links to a compare view for each one, so the changes being pulled in are one click away:
+
+> Changes included in this bump:
+>
+> - launchdarkly/foundation: [4248163c4559...3a4fe888543b](https://github.com/launchdarkly/foundation/compare/4248163c4559...3a4fe888543b)
+
+The versions come from the `go.mod` diff rather than from the workflow that triggered the run, so this works regardless of how the `update-command` performs the update. Updates that don't touch a `go.mod` — a Docker image tag or a Bazel image digest, say — get no links.
+
 ### Action inputs
 
 <!-- BEGIN_ACTION_INPUT_TABLE -->

@@ -113,6 +113,104 @@ runs:
       working-directory: ${{ env.working_dir }}
       run: ${{inputs.update-command}}
 
+    # Reads the versions out of the diff the update command just produced, so it
+    # works whatever that command was. Nothing here is worth failing a bump over,
+    # so the script always exits 0 and the PR body simply omits the links.
+    - name: Collect compare links for updated dependencies
+      shell: bash
+      working-directory: ${{inputs.repository}}
+      continue-on-error: true
+      run: |
+        set +e +o pipefail
+
+        links=/tmp/pr_compare_links.txt
+        : > "$links"
+
+        # Diff against HEAD, not the index: some update commands stage part of
+        # their work with `git rm`/`git add`.
+        diff="$(git diff HEAD --unified=0 -- '*go.mod' 2>/dev/null)"
+        if [ -z "$diff" ]; then
+          echo "No go.mod changes found; the PR body will not include compare links."
+          exit 0
+        fi
+
+        # Pair each module's before/after version by owner/repo rather than by
+        # module path, so a major bump (.../v24 to .../v25) still pairs up.
+        changed="$(
+          printf '%s\n' "$diff" | awk '
+            /^(---|\+\+\+)/ { next }
+            /^[-+]/ {
+              sign = substr($0, 1, 1)
+              n = split(substr($0, 2), token, /[ \t]+/)
+              for (i = 1; i < n; i++) {
+                if (token[i] !~ /^github\.com\//) continue
+                version = token[i+1]
+                if (version !~ /^v[0-9]/) continue
+                if (split(token[i], segment, "/") < 3) continue
+                sub(/\+incompatible$/, "", version)
+                repo = segment[2] "/" segment[3]
+                if (sign == "-") { before[repo] = version } else { after[repo] = version }
+                break
+              }
+            }
+            END {
+              for (repo in after) {
+                if (repo in before && before[repo] != after[repo]) {
+                  print repo, before[repo], after[repo]
+                }
+              }
+            }
+          ' 2>/dev/null
+        )"
+
+        if [ -z "$changed" ]; then
+          echo "The go.mod diff contained no module version changes to compare."
+          exit 0
+        fi
+
+        # A pseudo-version ends in the 12-character commit hash to compare
+        # against; any other version is a tag, which compares as-is.
+        compare_ref() {
+          if [[ "$1" =~ -([0-9a-f]{12})$ ]]; then
+            printf '%s' "${BASH_REMATCH[1]}"
+          else
+            printf '%s' "$1"
+          fi
+        }
+
+        append_link() {
+          local repo="$1" from to
+          from="$(compare_ref "$2")"
+          to="$(compare_ref "$3")"
+          if [ -n "$from" ] && [ -n "$to" ] && [ "$from" != "$to" ]; then
+            printf -- '- %s: [%s...%s](https://github.com/%s/compare/%s...%s)\n' \
+              "$repo" "$from" "$to" "$repo" "$from" "$to" >> "$links"
+          fi
+        }
+
+        # List the library this workflow runs in first; `go mod tidy` can move
+        # other dependencies along with it.
+        library="$(printf '%s' "${{github.repository}}" | tr '[:upper:]' '[:lower:]')"
+        for match in first rest; do
+          printf '%s\n' "$changed" | while read -r repo before after; do
+            if [ "$(printf '%s' "$repo" | tr '[:upper:]' '[:lower:]')" = "$library" ]; then
+              [ "$match" = first ] && append_link "$repo" "$before" "$after"
+            else
+              [ "$match" = rest ] && append_link "$repo" "$before" "$after"
+            fi
+          done
+        done
+
+        total="$(wc -l < "$links" 2>/dev/null | tr -d '[:space:]')"
+        if [ "${total:-0}" -gt 10 ] 2>/dev/null; then
+          { head -10 "$links"; printf -- '- ...and %s more\n' "$((total - 10))"; } > "${links}.capped"
+          mv "${links}.capped" "$links"
+        fi
+
+        echo "Compare links for the PR body:"
+        cat "$links"
+        exit 0
+
     # If the only files that changed are go.mod, go.sum, and vendor/modules.txt, then it's not worth a PR.
     - name: Check if relevant files were changed
       uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
@@ -130,6 +228,17 @@ runs:
         cat << "EOT" >> /tmp/pr_body.txt
         ### Summary
         This PR bumps [${{github.event.repository.name}}](https://github.com/${{github.repository}}) to pick up the most recent changes.
+        EOT
+
+        if [ -s /tmp/pr_compare_links.txt ]
+        then
+          echo "" >> /tmp/pr_body.txt
+          echo "Changes included in this bump:" >> /tmp/pr_body.txt
+          echo "" >> /tmp/pr_body.txt
+          cat /tmp/pr_compare_links.txt >> /tmp/pr_body.txt
+        fi
+
+        cat << "EOT" >> /tmp/pr_body.txt
 
         The following commands were run to generate this PR:
         ```sh
