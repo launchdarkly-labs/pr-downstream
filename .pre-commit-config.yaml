@@ -1,0 +1,18 @@
+repos:
+  - repo: local
+    hooks:
+      - id: generate-readme
+        name: "Generate action readme files"
+        language: system
+        entry: npx action-docs --no-banner --update-readme
+        files: action.yml$
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: '^dist/.*$'
+      - id: end-of-file-fixer
+        exclude: '^dist/.*$'
+      - id: check-yaml
+        exclude: '^src/run/__fixtures__/.*$'
