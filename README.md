@@ -34,50 +34,45 @@ jobs:
         env:
           GOPRIVATE: github.com/launchdarkly-labs/*
 ```
-### Action inputs
 
-<!-- BEGIN_ACTION_INPUT_TABLE -->
-|        NAME         |                                                                        DESCRIPTION                                                                        | REQUIRED |                             DEFAULT                              |
-|---------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|----------|------------------------------------------------------------------|
-| `author`            | The author name and email address in the format Display Name <email@address.com>. Defaults to the user who triggered the workflow run.                    | `false`  | `${{github.actor}} <${{github.actor}}@users.noreply.github.com>` |
-| `auto-merge`        | Whether or not to enable "Auto-merge" on the pull request.                                                                                                | `false`  | `false`                                                          |
-| `branch`            | The pull request branch name.                                                                                                                             | `false`  | `bump-${{github.repository}}/patch`                              |
-| `commit-message`    | The message to use when committing changes.                                                                                                               | `false`  | `[bot] Bump ${{github.event.repository.name}}`                   |
-| `committer`         | The committer name and email address in the format Display Name <email@address.com>. Defaults to the GitHub Actions bot user.                             | `false`  | `GitHub <noreply@github.com>`                                    |
-| `dryrun`            | Set to true to not really raise a PR. This is useful for testing.                                                                                         | `false`  | `false`                                                          |
-| `labels`            | A comma or newline-separated list of labels.                                                                                                              | `false`  | `bot`                                                            |
-| `ref`               | The branch, tag, or commit SHA to checkout from the downstream repository.                                                                                | `false`  | `main`                                                           |
-| `relevance-filter`  | A path filter used to determine if any relevant files where changed as a result of the `update-command`. By default, all changes are considered relevant. | `false`  | `- '**'`                                                         |
-| `repository`        | The downstream repository that consumes the library dependency.                                                                                           | `true`   | `N/A`                                                            |
-| `reviewers`         | A comma or newline-separated list of reviewers (GitHub usernames) to request a review from.                                                               | `false`  | `N/A`                                                            |
-| `team-reviewers`    | A comma or newline-separated list of GitHub teams to request a review from.                                                                               | `false`  | `N/A`                                                            |
-| `title`             | The title of the pull request.                                                                                                                            | `false`  | `[bot] Bump ${{github.event.repository.name}}`                   |
-| `token`             | Github PAT used to open PRs. This token must have write access against the repository.                                                                    | `true`   | `N/A`                                                            |
-| `update-command`    | The command run from the downstream repo that is used to update the library dependency.                                                                   | `true`   | `N/A`                                                            |
-| `working-directory` | The relative directory in the downstream repo where all commands will run.                                                                                | `false`  | `N/A`                                                            |
-<!-- END_ACTION_INPUT_TABLE -->
+<!-- action-docs-inputs source="action.yml" -->
+## Inputs
 
-### Action outputs
+| name | description | required | default |
+| --- | --- | --- | --- |
+| `author` | <p>The author name and email address in the format Display Name <a href="&#109;&#x61;i&#108;&#x74;&#111;&#58;&#x65;&#x6d;&#97;&#105;&#x6c;&#64;&#x61;&#100;&#100;&#x72;&#101;&#115;&#x73;&#x2e;&#x63;&#111;&#x6d;">&#101;&#109;&#x61;&#x69;l&#64;&#x61;&#100;&#x64;r&#x65;&#x73;&#x73;&#x2e;c&#111;&#x6d;</a>. Defaults to the user who triggered the workflow run.</p> | `false` | `${{github.actor}} <${{github.actor}}@users.noreply.github.com>` |
+| `auto-merge` | <p>Whether or not to enable "Auto-merge" on the pull request.</p> | `false` | `false` |
+| `branch` | <p>The pull request branch name.</p> | `false` | `bump-${{github.repository}}/patch` |
+| `commit-message` | <p>The message to use when committing changes.</p> | `false` | `[bot] Bump ${{github.event.repository.name}}` |
+| `committer` | <p>The committer name and email address in the format Display Name <a href="m&#x61;&#x69;&#108;&#116;&#111;&#x3a;&#x65;&#x6d;&#x61;&#105;&#x6c;&#64;&#x61;&#x64;&#100;&#114;&#101;&#115;&#x73;&#46;&#99;&#x6f;&#109;">&#x65;ma&#x69;&#108;&#64;&#97;&#x64;d&#x72;&#101;&#x73;&#115;&#46;&#x63;o&#109;</a>. Defaults to the GitHub Actions bot user.</p> | `false` | `GitHub <noreply@github.com>` |
+| `dry-run` | <p>Set to true to not really raise a PR. This is useful for testing.</p> | `false` | `false` |
+| `labels` | <p>A comma or newline-separated list of labels.</p> | `false` | `bot` |
+| `octosts-identity` | <p>The OctoSTS identity to assume for target repository operations</p> | `false` | `pr-downstream` |
+| `octosts-scope` | <p>The OctoSTS policy to assume for target repository operations</p> | `false` | `launchdarkly` |
+| `ref` | <p>The branch, tag, or commit SHA to checkout from the downstream repository.</p> | `false` | `main` |
+| `repository` | <p>The downstream repository that consumes the library dependency.</p> | `true` | `""` |
+| `token` | <p>Github PAT used to open PRs. This token must have write access against the repository.</p> | `false` | `""` |
+| `relevance-filter` | <p>A path filter used to determine if any relevant files where changed as a result of the <code>update-command</code>. By default, all changes are considered relevant.</p> | `false` | `- '**'` |
+| `reviewers` | <p>A comma or newline-separated list of reviewers (GitHub usernames) to request a review from.</p> | `false` | `""` |
+| `team-reviewers` | <p>A comma or newline-separated list of GitHub teams to request a review from.</p> | `false` | `""` |
+| `title` | <p>The title of the pull request.</p> | `false` | `[bot] Bump ${{github.event.repository.name}}` |
+| `update-command` | <p>The command run from the downstream repo that is used to update the library dependency.</p> | `true` | `""` |
+| `working-directory` | <p>The relative directory in the downstream repo where all commands will run.</p> | `false` | `""` |
+<!-- action-docs-inputs source="action.yml" -->
 
-<!-- BEGIN_ACTION_OUTPUT_TABLE -->
-|           NAME           |                                      DESCRIPTION                                      |
-|--------------------------|---------------------------------------------------------------------------------------|
-| `pull-request-head-sha`  | The commit SHA of the pull request branch.                                            |
-| `pull-request-number`    | The pull request number                                                               |
-| `pull-request-operation` | The pull request operation performed by the action, `created`, `updated` or `closed`. |
-| `pull-request-url`       | The URL of the pull request.                                                          |
-<!-- END_ACTION_OUTPUT_TABLE -->
+<!-- action-docs-outputs source="action.yml" -->
+## Outputs
 
-## Development
+| name | description |
+| --- | --- |
+| `pull-request-number` | <p>The pull request number</p> |
+| `pull-request-operation` | <p>The pull request operation performed by the action, <code>created</code>, <code>updated</code> or <code>closed</code>.</p> |
+| `pull-request-head-sha` | <p>The commit SHA of the pull request branch.</p> |
+| `pull-request-url` | <p>The URL of the pull request.</p> |
+<!-- action-docs-outputs source="action.yml" -->
 
-If you change or add an input, use `./scripts/update-readme.sh` to keep the above **Action inputs** table up to date.
+<!-- action-docs-runs source="action.yml" -->
+## Runs
 
-### Publishing a new release
-
-This Repo uses [release-drafter](https://github.com/release-drafter/release-drafter) to draft a new release every time a PR is merged. The version number is incremented anytime any of the following labels are included on a PR:
-
-- `patch`
-- `minor`
-- `major`
-
-After merging a PR, visit the [releases section](https://github.com/launchdarkly-labs/pr-downstream/releases) to publish the draft release.
+This action is a `composite` action.
+<!-- action-docs-runs source="action.yml" -->
